@@ -46,11 +46,35 @@ traverse(ast, {
     // }
     
     // 利用模板生成进行比对
+    // const calleeName = generate(path.node.callee).code
+    // if (targetCalleeName.includes(calleeName)) {
+    //   const { line, column } = path.node.loc.start
+    //   path.node.arguments.unshift(types.stringLiteral(`filename: (${line} ${column})`))
+    // }
+
+    // 改变需求，在打印的节点之前打印
+    // 要考虑多种场景，比如在jsx中调用，那就不能纯粹的前一行插入了
+    // 插入可以使用path.insertBefore
+    // 替换节点则path.replaceWith
+    if (path.node.isNew) {
+      return
+    }
+
     const calleeName = generate(path.node.callee).code
     if (targetCalleeName.includes(calleeName)) {
       const { line, column } = path.node.loc.start
-      path.node.arguments.unshift(types.stringLiteral(`filename: (${line} ${column})`))
+      const newNode = template.expression(`console.log("fileName: (${line}, ${column})")`)()
+      newNode.isNew = true
+
+      if (path.findParent(path => path.isJSXElement())) {
+        path.replaceWith(types.arrayExpression([newNode, path.node]))
+        // 跳过子节点处理
+        path.skip()
+      } else {
+        path.insertBefore(newNode)
+      }
     }
+
   }
 })
 
