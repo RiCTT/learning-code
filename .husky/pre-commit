@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx eslint src --fix
+#npx eslint tool-chain --config ./tool-chain/linter/eslint-start/.eslintrc.js --fix

@@ -8,7 +8,6 @@ module.exports = {
   parserOptions: {
     project: ["./tsconfig.json"], // 告诉 eslint：tsconfig 在哪
   },
-  plugins: ["@typescript-eslint"],
   extends: "eslint:recommended",
   rules: {
     "max-len": ["error", { "code": 80 }]
